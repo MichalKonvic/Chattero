@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chattero</title>
+    <style>
+        :root{
+            --Light-Green:#55D9B1;
+            --Ultra-White:#FFFFFF;
+            --Just-Black: #242422;
+            --Dark: #4A4A4A;
+            --Light-in-Dark: #686868;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            background-color: var(--Just-Black);
+        }
+        .main-form{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            width: 90%;
+            height: 90%;
+            max-width: 400px;
+            margin: 20px 20px;
+        }
+        main{
+            background-color: var(--Dark);
+            width: 90%;
+            height: 220px;
+            max-width: 420px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            border-radius: 15px;
+        }
+        .nickname-box{
+            width: 100%;
+            height: 50px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 2px 15px 0px 15px;
+            font-size: 25px;
+            color: var(--Ultra-White);
+            outline: none;
+            background-color: var(--Light-in-Dark);
+            border: none;
+            text-align: center;
+        }
+        .nickname-box:focus{
+            border: 2px solid var(--Light-Green);
+        }
+        .channel-box{
+            width: 100%;
+            height: 50px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 2px 15px 0px 15px;
+            font-size: 25px;
+            color: var(--Ultra-White);
+            outline: none;
+            background-color: var(--Light-in-Dark);
+            border: none;
+            text-align: center;
+        }
+        .channel-box:focus{
+            border: 2px solid var(--Light-Green);
+        }
+        .submit-btn{
+            width: 50%;
+            height: 40px;
+            max-width: 250px;
+            color: var(--Ultra-White);
+            text-align: center;
+            background-color: var(--Light-Green);
+            outline: none;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 20px;
+        }
+        .submit-btn:hover{
+            transition: 0.3s;
+            background-color: #74edc9;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <form class="main-form">
+            <input type="text" class="nickname-box" placeholder="Nickname">
+            <input type="text" class="channel-box" placeholder="Channel">
+            <input class="submit-btn" type="submit" value="CONTINUE">
+        </form>
+    </main>
+</body>
+</html>
