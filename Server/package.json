@@ -1,0 +1,18 @@
+{
+  "name": "chattero",
+  "version": "1.0.0",
+  "description": "Chattero is chatting web app with temp. channels.",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chat"
+  ],
+  "author": "MichalKonvic",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.0.0"
+  }
+}

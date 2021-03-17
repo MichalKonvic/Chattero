@@ -1,0 +1,150 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <title>Chattero</title>
+    <style>
+        :root{
+            --Light-Green:#55D9B1;
+            --Ultra-White:#FFFFFF;
+            --Just-Black: #242422;
+            --Dark: #4A4A4A;
+            --Light-in-Dark: #686868;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        @font-face {
+            font-family: Dosis Bold;
+            src: url('/Assets/Font/Dosis/Dosis-Bold.ttf');
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: Dosis Semi Bold;
+            src: url('/Assets/Font/Dosis/Dosis-SemiBold.ttf');
+            font-weight: Regular;
+        }
+        html,body{
+            background-color: var(--Just-Black);
+        }
+        .main-form{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            width: auto;
+            height: 90%;
+            max-width: 400px;
+            margin: 20px;
+        }
+        main{
+            background-color: var(--Dark);
+            width: 90%;
+            height: 220px;
+            max-width: 420px;
+            min-width: 300px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            border-radius: 15px;
+        }
+        .nickname-box{
+            width: 100%;
+            height: 50px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 2px 15px 0px 15px;
+            font-size: 25px;
+            font-family: Dosis Semi Bold;
+            color: var(--Ultra-White);
+            outline: none;
+            background-color: var(--Light-in-Dark);
+            border: none;
+            text-align: center;
+        }
+        .nickname-box:focus{
+            border: 2px solid var(--Light-Green);
+        }
+        .channel-box{
+            width: 100%;
+            height: 50px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 2px 15px 0px 15px;
+            font-size: 25px;
+            font-family: Dosis Semi Bold;
+            color: var(--Ultra-White);
+            outline: none;
+            background-color: var(--Light-in-Dark);
+            border: none;
+            text-align: center;
+        }
+        .channel-box:focus{
+            border: 2px solid var(--Light-Green);
+        }
+        .submit-btn{
+            font-family: Dosis Bold;
+            width: 50%;
+            height: 40px;
+            max-width: 250px;
+            color: var(--Ultra-White);
+            text-align: center;
+            background-color: var(--Light-Green);
+            outline: none;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 20px;
+        }
+        .Alert-box{
+            background-color: var(--Dark);
+            position: fixed;
+            top: -10%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: fit-content;
+            height: 60px;
+            border-radius: 50px;
+            opacity: 0;
+            transition: 0.5s;
+        }
+        .Alert-box-text{
+            font-family: Dosis Bold;
+            color: var(--Ultra-White);
+            display: flex;
+            justify-content: center;
+            font-size: 20px;
+            margin: 15px 30px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="Alert-box" id="Alert-box">
+        <p class="Alert-box-text" id="Alert-box-text"></p>
+    </div>
+    <main>
+        <form id="main-form" class="main-form">
+            <input for="nick" type="text" class="nickname-box" placeholder="Nickname">
+            <input for="chanl"type="text" class="channel-box" placeholder="Channel">
+            <button onclick="SendData()" id="continue-btn" class="submit-btn">CONTINUE</button>
+        </form>
+    </main>
+</body>
+<script defer>
+    // const socket = io('ws://localhost:3000/?');
+    // socket.emit('message',"Ez");
+
+
+    async function AlertPop(content,poptime = 3000) {
+        document.getElementById("Alert-box").style.opacity = '1';
+        document.getElementById("Alert-box").style.top = '50px';
+        document.getElementById("Alert-box-text").innerText = content;
+        setTimeout(() => {
+            document.getElementById("Alert-box").style.top = '-10%';
+        }, poptime);
+    }
+</script>
+</html>
