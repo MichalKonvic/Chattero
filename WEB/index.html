@@ -4,15 +4,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chattero</title>
-    <script defer>
-        async function Alert(content,poptime = 3000) {
-            document.getElementById("Alert-box").style.top = '5%';
-            document.getElementById("Alert-box-text").innerText = content;
-            setTimeout(() => {
-                document.getElementById("Alert-box").style.top = '-5%';
-            }, poptime);
-        }
-    </script>
     <style>
         :root{
             --Light-Green:#55D9B1;
@@ -25,6 +16,16 @@
             margin: 0;
             padding: 0;
         }
+        @font-face {
+            font-family: Dosis Bold;
+            src: url('/Assets/Font/Dosis/Dosis-Bold.ttf');
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: Dosis Semi Bold;
+            src: url('/Assets/Font/Dosis/Dosis-SemiBold.ttf');
+            font-weight: Regular;
+        }
         html,body{
             background-color: var(--Just-Black);
         }
@@ -32,16 +33,17 @@
             display: flex;
             align-items: center;
             flex-direction: column;
-            width: 90%;
+            width: auto;
             height: 90%;
             max-width: 400px;
-            margin: 20px 20px;
+            margin: 20px;
         }
         main{
             background-color: var(--Dark);
             width: 90%;
             height: 220px;
             max-width: 420px;
+            min-width: 300px;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -55,6 +57,7 @@
             border-radius: 10px;
             padding: 2px 15px 0px 15px;
             font-size: 25px;
+            font-family: Dosis Semi Bold;
             color: var(--Ultra-White);
             outline: none;
             background-color: var(--Light-in-Dark);
@@ -71,6 +74,7 @@
             border-radius: 10px;
             padding: 2px 15px 0px 15px;
             font-size: 25px;
+            font-family: Dosis Semi Bold;
             color: var(--Ultra-White);
             outline: none;
             background-color: var(--Light-in-Dark);
@@ -81,6 +85,7 @@
             border: 2px solid var(--Light-Green);
         }
         .submit-btn{
+            font-family: Dosis Bold;
             width: 50%;
             height: 40px;
             max-width: 250px;
@@ -95,22 +100,24 @@
             font-size: 20px;
         }
         .Alert-box{
-            background-color: var(--Ultra-White);
+            background-color: var(--Dark);
             position: fixed;
-            top: -5%;
+            top: -10%;
             left: 50%;
             transform: translate(-50%,-50%);
             width: fit-content;
             height: 60px;
             border-radius: 50px;
+            opacity: 0;
             transition: 0.5s;
         }
         .Alert-box-text{
-            color: var(--Dark);
+            font-family: Dosis Bold;
+            color: var(--Ultra-White);
             display: flex;
             justify-content: center;
             font-size: 20px;
-            margin: 20px 30px;
+            margin: 15px 30px 20px;
         }
     </style>
 </head>
@@ -119,11 +126,24 @@
         <p class="Alert-box-text" id="Alert-box-text"></p>
     </div>
     <main>
-        <form class="main-form">
-            <input type="text" class="nickname-box" placeholder="Nickname">
-            <input type="text" class="channel-box" placeholder="Channel">
-            <input class="submit-btn" type="submit" value="CONTINUE">
+        <form id="main-form" class="main-form">
+            <input for="nick" type="text" class="nickname-box" placeholder="Nickname">
+            <input for="chanl"type="text" class="channel-box" placeholder="Channel">
+            <button onclick="SendData()" id="continue-btn" class="submit-btn">CONTINUE</button>
         </form>
     </main>
 </body>
+<script defer>
+    async function AlertPop(content,poptime = 3000) {
+        document.getElementById("Alert-box").style.opacity = '1';
+        document.getElementById("Alert-box").style.top = '50px';
+        document.getElementById("Alert-box-text").innerText = content;
+        setTimeout(() => {
+            document.getElementById("Alert-box").style.top = '-10%';
+        }, poptime);
+    }
+    async function SendData() {
+        //Fetch
+    }
+</script>
 </html>
