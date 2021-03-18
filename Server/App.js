@@ -1,23 +1,17 @@
 const express = require('express');
 const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
-    cors:{ origin: "*"}
-});
 const port = 3000;
 app.use(express.static('APP'));
-
-io.on('connection', (socket) => {
-    console.log("User connected!");
-    socket.on('message', message => console.log(message));
-});
 
 app.get('/api', (req, res) => {
     
 });
 
-app.get('/ChannelCreate', (req, res) => {
-    
+app.get('/ChannelCreate/:ChannelID', (req, res) => {
+    res.json({
+        ChannelID: req.params['ChannelID'],
+        Status: 'Created'
+    });
 });
 
 app.get('/socket.io/socket.io.js', (req, res) =>{

@@ -112,7 +112,7 @@
             transition: 0.5s;
         }
         .Alert-box-text{
-            font-family: Dosis Bold;
+            font-family: Dosis Semi Bold;
             color: var(--Ultra-White);
             display: flex;
             justify-content: center;
@@ -127,8 +127,8 @@
     </div>
     <main>
         <form id="main-form" class="main-form">
-            <input for="nick" type="text" class="nickname-box" placeholder="Nickname">
-            <input for="chanl"type="text" class="channel-box" placeholder="Channel">
+            <input  type="text" class="nickname-box" placeholder="Nickname">
+            <input onkeydown="InputCheck()" id="chanl" type="text" class="channel-box" placeholder="Channel">
             <button onclick="SendData()" id="continue-btn" class="submit-btn">CONTINUE</button>
         </form>
     </main>
@@ -137,7 +137,6 @@
     // const socket = io('ws://localhost:3000/?');
     // socket.emit('message',"Ez");
 
-
     async function AlertPop(content,poptime = 3000) {
         document.getElementById("Alert-box").style.opacity = '1';
         document.getElementById("Alert-box").style.top = '50px';
@@ -145,6 +144,14 @@
         setTimeout(() => {
             document.getElementById("Alert-box").style.top = '-10%';
         }, poptime);
+    }
+    function InputCheck() {
+        let InputBox = document.getElementById("chanl");
+        if (/ /g.test(InputBox.value) == true) {
+            AlertPop("Spacing is not allowed in channel name!", 3000);
+            let replacement = InputBox.value.replace(/ /g, '');
+            InputBox.value = replacement;
+        }
     }
 </script>
 </html>
