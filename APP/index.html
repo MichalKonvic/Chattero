@@ -50,7 +50,7 @@
             transform: translate(-50%,-50%);
             border-radius: 15px;
         }
-        .nickname-box{
+        .username-box{
             width: 100%;
             height: 50px;
             margin-bottom: 20px;
@@ -64,7 +64,7 @@
             border: none;
             text-align: center;
         }
-        .nickname-box:focus{
+        .username-box:focus{
             border: 2px solid var(--Light-Green);
         }
         .channel-box{
@@ -127,31 +127,14 @@
     </div>
     <main>
         <form id="main-form" class="main-form">
-            <input  type="text" class="nickname-box" placeholder="Nickname">
+            <input id="user"  type="text" class="username-box" placeholder="Username">
             <input onkeydown="InputCheck()" id="chanl" type="text" class="channel-box" placeholder="Channel">
             <button onclick="SendData()" id="continue-btn" class="submit-btn">CONTINUE</button>
         </form>
     </main>
 </body>
-<script defer>
+<script src="/Assets/index.js" defer>
     // const socket = io('ws://localhost:3000/?');
     // socket.emit('message',"Ez");
-
-    async function AlertPop(content,poptime = 3000) {
-        document.getElementById("Alert-box").style.opacity = '1';
-        document.getElementById("Alert-box").style.top = '50px';
-        document.getElementById("Alert-box-text").innerText = content;
-        setTimeout(() => {
-            document.getElementById("Alert-box").style.top = '-10%';
-        }, poptime);
-    }
-    function InputCheck() {
-        let InputBox = document.getElementById("chanl");
-        if (/ /g.test(InputBox.value) == true) {
-            AlertPop("Spacing is not allowed in channel name!", 3000);
-            let replacement = InputBox.value.replace(/ /g, '');
-            InputBox.value = replacement;
-        }
-    }
 </script>
 </html>
