@@ -24,6 +24,7 @@ function InputCheck() {
 }
 
 async function SendData() {
+    event.preventDefault();
     const response = await fetch('/Join', {
         method: 'POST',
         headers: {
@@ -34,4 +35,5 @@ async function SendData() {
             ChannelID: ChannelBox.value
         }) // body data type must match "Content-Type" header
       });
+      console.log(JSON.stringify(await response.json()));
 }

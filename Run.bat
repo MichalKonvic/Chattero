@@ -1,2 +1,2 @@
-node ./Server/App.js
+nodemon ./Server/App.js
 pause

@@ -9,7 +9,9 @@ app.get('/api', (req, res) => {
     
 });
 app.post('/Join', (req, res, next) => {
-    console.log('Got body:', req.body);
+    const User = req.body['Username'];
+    const Channel = req.body['ChannelID'];
+    console.log('Username:' + User + ' ChannelID: ' + Channel);
     res.json(req.body);
 
     //When no data found
