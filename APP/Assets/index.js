@@ -5,6 +5,11 @@ let AlertBox = document.getElementById('Alert-box');
 let AlertBoxText = document.getElementById('Alert-box-text');
 let IndexLoad = true;
 
+class ActionHandler {
+    constructor(Action){
+
+    }
+}
 
 async function AlertPop(content,poptime = 3000) {
     AlertBox.style.opacity = '1';
