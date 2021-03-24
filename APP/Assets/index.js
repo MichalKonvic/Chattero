@@ -5,6 +5,7 @@ let AlertBox = document.getElementById('Alert-box');
 let AlertBoxText = document.getElementById('Alert-box-text');
 let IndexLoad = true;
 
+
 async function AlertPop(content,poptime = 3000) {
     AlertBox.style.opacity = '1';
     AlertBox.style.top = '50px';
@@ -34,7 +35,7 @@ async function SendData() {
         body: JSON.stringify({
             Username: UsernameBox.value,
             ChannelID: ChannelBox.value
-        }) // body data type must match "Content-Type" header
+        })
       });
       console.log(JSON.stringify(await response.json()));
 }

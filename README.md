@@ -1,4 +1,3 @@
 Error code:
-0 - everything is ok
-1 - cannot create room
-2 - no data sent
+
+4 - ChannelID does not satisfy ChannelID rules! - RuleBreakError / Username does not satisfy UsernameID rules - RuleBreakError

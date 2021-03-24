@@ -9,10 +9,60 @@ app.get('/api', (req, res) => {
     
 });
 app.post('/Join', (req, res, next) => {
-    const User = req.body['Username'];
+    const Username = req.body['Username'];
     const Channel = req.body['ChannelID'];
-    console.log('Username:' + User + ' ChannelID: ' + Channel);
-    res.json(req.body);
+    //Data Check
+
+    try {
+        //if url pattern found (must be here bcs match could thow unwanted error)
+        if(/^[a-zA-Z0-9_]*$/.test(Channel) == true){
+            //If url pattern match != Channel
+            if(Channel.match(/^[a-zA-Z0-9_]*$/) != Channel){
+                throw {
+                    message: "ChannelID does not satisfy ChannelID rules!",
+                    code: 4,
+                    type: "RuleBreakError",
+                    ClientAction: {
+                        AlertPop: {
+                            message: "Invalid Channel name!",
+                            poptime: 3000
+                        }
+                    }
+                };
+            }
+        }else{
+            //pattern not found
+            throw {
+                message: "ChannelID does not satisfy ChannelID rules!",
+                code: 4,
+                type: "RuleBreakError",
+                ClientAction: {
+                    AlertPop: {
+                        message: "Invalid Channel name!",
+                        poptime: 3000
+                    }
+                }
+            };
+        }
+        //if pattern found
+        if(Username == ''){
+            throw {
+                message: "Username does not satisfy username rules!",
+                code: 4,
+                type: "RuleBreakError",
+                ClientAction: {
+                    AlertPop: {
+                        message: "Invalid username!",
+                        poptime: 3000
+                    }
+                }
+            };
+        }
+    } catch (errorthrw) {
+        res.json({
+            Error: errorthrw
+        });
+    }
 
     //When no data found
     // res.json({
