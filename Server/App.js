@@ -37,29 +37,37 @@ app.post('/Join', (req, res, next) => {
                 code: 4,
                 type: "RuleBreakError",
                 ClientAction: {
-                    AlertPop: {
-                        message: "Invalid Channel name!",
-                        poptime: 3000
-                    }
+                    AlertPop: ["Invalid Channel name!",3000]
                 }
             };
         }
         //if pattern found
         if(Username == ''){
             throw {
-                message: "Username does not satisfy username rules!",
+                Username: Username,
+                ChannelID: Channel,
+                message: "Username does not satisfy Username rules!",
                 code: 4,
                 type: "RuleBreakError",
                 ClientAction: {
-                    AlertPop: {
-                        message: "Invalid username!",
-                        poptime: 3000
-                    }
+                    AlertPop: ["Invalid Username!",3000]
                 }
             };
         }
+        res.json({
+            Username: Username,
+            ChannelID: Channel,
+            message: "Request accepted!",
+            code: 0,
+            ClientAction: {
+                //Start room and animation to room
+            },
+            Error: false
+        });
     } catch (errorthrw) {
         res.json({
+            Username: Username,
+            ChannelID: Channel,
             Error: errorthrw
         });
     }

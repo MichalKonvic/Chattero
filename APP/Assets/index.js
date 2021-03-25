@@ -5,12 +5,6 @@ let AlertBox = document.getElementById('Alert-box');
 let AlertBoxText = document.getElementById('Alert-box-text');
 let IndexLoad = true;
 
-class ActionHandler {
-    constructor(Action){
-
-    }
-}
-
 async function AlertPop(content,poptime = 3000) {
     AlertBox.style.opacity = '1';
     AlertBox.style.top = '50px';
@@ -20,13 +14,19 @@ async function AlertPop(content,poptime = 3000) {
     }, poptime);
 }
 
-
-
-function InputCheck() {
-    if (/ /g.test(ChannelBox.value) == true) {
-        AlertPop("Spacing is not allowed in channel name!", 3000);
-        let replacement = ChannelBox.value.replace(/ /g, '');
-        ChannelBox.value = replacement;
+function ResponseHandler(ServerResponse) {
+    if (ServerResponse['Error'] != false) {
+        try {
+            if (ServerResponse.Error.ClientAction != false) {
+                //foreach action given by serever
+                Object.keys(ServerResponse.Error.ClientAction).forEach(action => {
+                    //Runs action with given arguments
+                    eval(action).apply(this,ServerResponse.Error.ClientAction[action]);
+                });
+            }
+        } catch (error) {
+            console.log("%c Looks like something bad happend! %c 👷‍♂️","border-radius: 10px; background: #f75e5e; font-weight: bold; color: white; font-size: 50px;","font-size: 50px");
+        }
     }
 }
 
@@ -35,12 +35,12 @@ async function SendData() {
     const response = await fetch('/Join', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             Username: UsernameBox.value,
             ChannelID: ChannelBox.value
         })
-      });
-      console.log(JSON.stringify(await response.json()));
+    });
+    ResponseHandler(await response.json())
 }
