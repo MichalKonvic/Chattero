@@ -6,7 +6,8 @@ let AlertBoxText = document.getElementById('Alert-box-text');
 let Main = document.getElementById('main');
 let MainForm = document.getElementById('main-form');
 let ContinueBtn = document.getElementById('continue-btn');
-let SendButton = document.getElementById("SendButton");
+let SendBtn = document.getElementById("SendButton");
+let LeaveBtn = document.getElementById("leave-btn");
 let IndexLoad = true;
 let Connected = false;
 let InChat = false;
@@ -18,7 +19,7 @@ async function PageTransform() {
         ContinueBtn.style.transition = "0.3s";
         ContinueBtn.style.display = "none";
         ContinueBtn.style.opacity = "0";
-        ContinueBtn.disabled = true;
+        ContinueBtn.disabled = 'true';
     
         UsernameBox.style.transition = "0.3s";
         UsernameBox.style.opacity = "0";
@@ -40,18 +41,20 @@ async function PageTransform() {
             MainForm.style.flexDirection = 'row';
             MainForm.style.maxWidth = "none";
             Main.style.top = "93%";
-            SendButton.style.display = "block";
-            SendButton.style.marginLeft = "-40px";
+            SendBtn.style.display = "block";
+            SendBtn.style.marginLeft = "-40px";
+            
         }, 800);
-        ChannelBox.addEventListener('focusin',() =>{
+        setTimeout(() => {
             Main.style.transition = "0.5s";
             MainForm.style.transition = "0.4s";
             Main.style.maxWidth = "99%";
-            ChannelBox.style.flexGrow = "2";
-        });
-        ChannelBox.addEventListener('focusout',() =>{
-            Main.style.maxWidth = "420px";
-        });
+        }, 1250);
+        setTimeout(() => {
+            LeaveBtn.style.display = 'block';
+            LeaveBtn.disabled = 'false';
+            LeaveBtn.style.opacity = '1';
+        }, 1500);
         InChat = true;
     } else {
         
@@ -103,4 +106,5 @@ async function SendFormData() {
     } else {
         AlertPop("You are already in channel!", 4000);
     }
+    PageTransform();
 }

@@ -11,6 +11,9 @@
             --Just-Black: #242422;
             --Dark: #4A4A4A;
             --Light-in-Dark: #686868;
+            --Leave-Red: #ff4747;
+            --Light-Leave-Red: #ff6666;
+            --Dark-Leave-Red: #ff3838;
         }
         *{
             margin: 0;
@@ -109,6 +112,7 @@
             border-radius: 50px;
             opacity: 0;
             transition: 0.5s;
+            z-index: 1000;
         }
         .Alert-box-text{
             font-family: Dosis Semi Bold;
@@ -120,10 +124,35 @@
         }
         .SendButton{
             display: none;
-            background-color: #55D9B1;
+            background-color: var(--Light-Green);
             border: 5px solid var(--Light-Green);
             border-radius: 0px 10px 10px 0;
             cursor: pointer;
+        }
+        .leave-btn{
+            position: fixed;
+            top: 2%;
+            right: 2%;
+            width: 100px;
+            height: 40px;
+            text-align: right;
+            padding: 5px 15px 10px 10px;
+            font-family: Dosis Semi Bold;
+            background-color: var(--Leave-Red);
+            cursor: pointer;
+            border: transparent;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            transition: 0.3s;
+            display: block;
+            opacity: 0;
+        }
+        .leave-btn:hover{
+            background-color: var(--Light-Leave-Red);
+        }
+        .leave-btn:active{
+            background-color: var(--Dark-Leave-Red);
         }
     </style>
     <script>
@@ -150,6 +179,7 @@
     <div class="Alert-box" id="Alert-box">
         <p class="Alert-box-text" id="Alert-box-text"></p>
     </div>
+    <button id="leave-btn" class="leave-btn" disabled>✌️ Leave</button>
     <main id="main">
         <form id="main-form" class="main-form">
             <input id="user" autocomplete="off"  type="text" class="username-box" placeholder="Username">
