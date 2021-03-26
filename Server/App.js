@@ -23,10 +23,7 @@ app.post('/Join', (req, res, next) => {
                     code: 4,
                     type: "RuleBreakError",
                     ClientAction: {
-                        AlertPop: {
-                            message: "Invalid Channel name!",
-                            poptime: 3000
-                        }
+                        AlertPop: ["Invalid Channel name!","",3000]
                     }
                 };
             }
@@ -37,7 +34,7 @@ app.post('/Join', (req, res, next) => {
                 code: 4,
                 type: "RuleBreakError",
                 ClientAction: {
-                    AlertPop: ["Invalid Channel name!",3000]
+                    AlertPop: ["Invalid Channel name!","",3000]
                 }
             };
         }
@@ -50,7 +47,7 @@ app.post('/Join', (req, res, next) => {
                 code: 4,
                 type: "RuleBreakError",
                 ClientAction: {
-                    AlertPop: ["Invalid Username!",3000]
+                    AlertPop: ["Invalid Username!","",3000]
                 }
             };
         }

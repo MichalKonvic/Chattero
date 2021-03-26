@@ -3,6 +3,7 @@ let ChannelBox = document.getElementById('chanl');
 let UsernameBox = document.getElementById('user');
 let AlertBox = document.getElementById('Alert-box');
 let AlertBoxText = document.getElementById('Alert-box-text');
+let AlertBoxTextDes = document.getElementById('Alert-box-text-des');
 let Main = document.getElementById('main');
 let MainForm = document.getElementById('main-form');
 let ContinueBtn = document.getElementById('continue-btn');
@@ -64,13 +65,24 @@ async function PageTransform() {
 
 
 
-async function AlertPop(content,poptime = 3000) {
-    AlertBox.style.opacity = '1';
-    AlertBox.style.top = '50px';
-    AlertBoxText.innerText = content;
-    setTimeout(() => {
-        AlertBox.style.top = '-10%';
-    }, poptime);
+async function AlertPop(content="",desc="",poptime = 3000) {
+    if (content.length > 40 ) {
+        console.log("%c Alert message is too large! %c 👷‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
+        console.log("%c Message moved here ➜ ","background:#3689ff; font-weight: bold; color: white; font-size: 15px; border-radius: 2px;", content,);
+        console.log("%c Description moved here ➜ ","background:#3689ff; font-weight: bold; color: white; font-size: 15px; border-radius: 2px;",desc);
+    }else if(desc.length > 40){
+        console.log("%c Alert description is too large! %c 👷‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
+        console.log("%c Message moved here ➜ ","background:#3689ff; font-weight: bold; color: white; font-size: 15px; border-radius: 2px;", content,);
+        console.log("%c Description moved here ➜ ","background:#3689ff; font-weight: bold; color: white; font-size: 15px; border-radius: 2px;",desc);
+    } else {
+        AlertBox.style.opacity = '1';
+        AlertBox.style.top = '50px';
+        AlertBoxText.innerText = content;
+        AlertBoxTextDes.innerText = desc;
+        setTimeout(() => {
+            AlertBox.style.top = '-10%';
+        }, poptime);
+    }
 }
 
 function ResponseHandler(ServerResponse) {
