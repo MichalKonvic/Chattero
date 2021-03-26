@@ -85,18 +85,28 @@ async function AlertPop(content="",desc="",poptime = 3000) {
     }
 }
 
+function ActionRun(ClientActionObj){
+    //foreach action in ClientAction object
+    Object.keys(ClientActionObj).forEach(action => {
+        //Executes function with given params (array)
+        eval(action).apply(this,ClientActionObj[action]);
+    });
+}
+
 function ResponseHandler(ServerResponse) {
     if (ServerResponse['Error'] != false) {
         try {
             if (ServerResponse.Error.ClientAction != false) {
-                //foreach action given by serever
-                Object.keys(ServerResponse.Error.ClientAction).forEach(action => {
-                    //Runs action with given arguments
-                    eval(action).apply(this,ServerResponse.Error.ClientAction[action]);
-                });
+                ActionRun(ServerResponse.Error.ClientAction);
             }
         } catch (error) {
             console.log("%c Looks like something bad happend! %c 👷‍♂️","border-radius: 10px; background: #f75e5e; font-weight: bold; color: white; font-size: 50px;","font-size: 50px");
+        }
+    }else{
+        if (ServerResponse.code == 0) {
+            if(ServerResponse.ClientAction != false){
+                ActionRun(ServerResponse.ClientAction);
+            }
         }
     }
 }
@@ -118,5 +128,4 @@ async function SendFormData() {
     } else {
         AlertPop("You are already in channel!", 4000);
     }
-    PageTransform();
 }
