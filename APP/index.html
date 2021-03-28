@@ -6,6 +6,7 @@
     <style>
         :root{
             --Light-Green:#55D9B1;
+            --Lighter-Green: #45f0bd;
             --Ultra-White:#FFFFFF;
             --Just-Black: #242422;
             --Dark: #4A4A4A;
@@ -143,6 +144,11 @@
             border-radius: 0px 10px 10px 0;
             cursor: pointer;
             margin: 10px 10px 10px -40px;
+            transition: 0.3s;
+        }
+        .SendButton:hover{
+            background-color: var(--Lighter-Green);
+            border-color: var(--Lighter-Green);
         }
         .leave-btn{
             position: fixed;
@@ -244,7 +250,7 @@
         <form id="main-form" class="main-form">
             <input id="user" autocomplete="off"  type="text" class="username-box" placeholder="Username">
             <input id="chanl" autocomplete="off" type="text" class="channel-box" placeholder="Channel">        
-            <button onclick="SendFormData()" id="continue-btn" class="submit-btn">CONTINUE</button>
+            <button onclick="SendData('Join')" id="continue-btn" class="submit-btn">CONTINUE</button>
         </form>
     </main>
 </body>

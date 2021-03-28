@@ -1,5 +1,6 @@
 let ChannelBox = document.getElementById('chanl');
 let UsernameBox = document.getElementById('user');
+let MessageBox = document.getElementById('message-box-input');
 let AlertBox = document.getElementById('Alert-box');
 let AlertBoxText = document.getElementById('Alert-box-text');
 let AlertBoxTextDes = document.getElementById('Alert-box-text-des');
@@ -10,10 +11,10 @@ let Connected = false;
 const IndexLoad = true;
 let InChat = false;
 
-function LeaveRoom() {
-    PageTransform();
-    //Inchat false must be after bcs PageTransform use this variable to idetification
-    InChat = false;
+function ClearInputs() {
+    ChannelBox.value = "";
+    UsernameBox.value = "";
+    MessageBox.value = "";
 }
 
 async function PageTransform() {
@@ -29,7 +30,7 @@ async function PageTransform() {
             ChatScreen.style.opacity = "1";
         }, 250);
         InChat = true;
-        LeaveBtn.addEventListener('click',LeaveRoom);
+        LeaveBtn.addEventListener('click',() => SendData('Leave'));
     } else {
         console.log("false :",InChat);
         ChatScreen.style.display = "none";
@@ -41,6 +42,7 @@ async function PageTransform() {
         setTimeout(() => {
             LoginScreen.style.opacity = "1";
         }, 250);
+        InChat = false;
     }
 }
 
@@ -93,8 +95,8 @@ function ResponseHandler(ServerResponse) {
     }
 }
 
-async function SendFormData() {
-    if (InChat == false) {
+async function SendData(action) {
+    if (action == 'Join') {
         event.preventDefault();
         const response = await fetch('/Join', {
             method: 'POST',
@@ -107,7 +109,18 @@ async function SendFormData() {
             })
         });
         ResponseHandler(await response.json())
-    } else {
-        AlertPop("You are already in channel!", 4000);
+    }else if(action == 'Leave'){
+        event.preventDefault();
+        const response = await fetch('/Leave', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Username: UsernameBox.value,
+                ChannelID: ChannelBox.value
+            })
+        });
+        ResponseHandler(await response.json())
     }
 }

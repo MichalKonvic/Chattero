@@ -4,14 +4,30 @@ const port = 3001;
 app.use(express.static('APP'));
 app.use(express.json({limit: '8mb'}));
 
-app.get('/api', (req, res) => {
-    
+app.post('/Leave', (req, res, next) =>{
+    const Username = req.body['Username'];
+    const Channel = req.body['ChannelID'];
+    try {
+        res.json({
+            Username: Username,
+            ChannelID: Channel,
+            message: "Request accepted!",
+            code: 0,
+            ClientAction: {
+                AlertPop: ["Channel left!","",4000],
+                PageTransform: [],
+                ClearInputs: []
+            },
+            Error: false
+        });
+    } catch (errorthrw) {
+        
+    }
 });
 app.post('/Join', (req, res, next) => {
     const Username = req.body['Username'];
     const Channel = req.body['ChannelID'];
     //Data Check
-
     try {
         //if url pattern found (must be here bcs match could thow unwanted error)
         if(/^[a-zA-Z0-9_]*$/.test(Channel) == true){
@@ -57,7 +73,8 @@ app.post('/Join', (req, res, next) => {
             code: 0,
             ClientAction: {
                 AlertPop: ["Joining!",`Joining ${Channel} as ${Username}`,4000],
-                PageTransform: []
+                PageTransform: [],
+                ClearInputs: []
             },
             Error: false
         });
