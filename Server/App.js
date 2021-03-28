@@ -73,6 +73,7 @@ app.post('/Join', (req, res, next) => {
             code: 0,
             ClientAction: {
                 AlertPop: ["Joining!",`Joining ${Channel} as ${Username}`,4000],
+                WSConnect: [`ws://${req.headers.host}`],
                 PageTransform: [],
                 ClearInputs: []
             },

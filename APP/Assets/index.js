@@ -11,6 +11,14 @@ let Connected = false;
 const IndexLoad = true;
 let InChat = false;
 
+function ActionRun(ClientActionObj){
+    //foreach action in ClientAction object
+    Object.keys(ClientActionObj).forEach(action => {
+        //Executes function with given params (array)
+        eval(action).apply(this,ClientActionObj[action]);
+    });
+}
+
 function ClearInputs() {
     ChannelBox.value = "";
     UsernameBox.value = "";
@@ -18,9 +26,7 @@ function ClearInputs() {
 }
 
 async function PageTransform() {
-    console.log("PageTransform triggered");
     if (InChat == false) {
-        console.log("true :",InChat);
         LoginScreen.style.display = "none";
         setTimeout(() => {
             LoginScreen.style.opacity = "0";
@@ -32,7 +38,6 @@ async function PageTransform() {
         InChat = true;
         LeaveBtn.addEventListener('click',() => SendData('Leave'));
     } else {
-        console.log("false :",InChat);
         ChatScreen.style.display = "none";
         setTimeout(() => {
             ChatScreen.style.opacity = "0";
@@ -45,9 +50,6 @@ async function PageTransform() {
         InChat = false;
     }
 }
-
-
-
 
 async function AlertPop(content="",desc="",poptime = 3000) {
     if (content.length > 40 ) {
@@ -69,11 +71,14 @@ async function AlertPop(content="",desc="",poptime = 3000) {
     }
 }
 
-function ActionRun(ClientActionObj){
-    //foreach action in ClientAction object
-    Object.keys(ClientActionObj).forEach(action => {
-        //Executes function with given params (array)
-        eval(action).apply(this,ClientActionObj[action]);
+async function WSConnect(wspath) {
+    const socket = new WebSocket(wspath);
+    socket.addEventListener('error', () => {
+        console.log("%c Cannot connect to chating server! %c 👷‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
+        AlertPop("Error!","Cannot connect to chating server!",4500);
+    })
+    socket.addEventListener('open',() =>{
+        console.log("%c Connection established! %c 🤝","border-radius: 5px; background: #55D9B1; font-weight: bold; color: white; font-size: 30px;","font-size: 30px");
     });
 }
 
@@ -88,6 +93,10 @@ function ResponseHandler(ServerResponse) {
         }
     }else{
         if (ServerResponse.code == 0) {
+            const ServerUsername = ServerResponse.Username;
+            globalThis.ServerUsername;
+            const ServerChannelID = ServerResponse.ChannelID;
+            globalThis.ServerChannelID;
             if(ServerResponse.ClientAction != false){
                 ActionRun(ServerResponse.ClientAction);
             }
@@ -96,6 +105,8 @@ function ResponseHandler(ServerResponse) {
 }
 
 async function SendData(action) {
+    globalThis.Username = UsernameBox.value;
+    globalThis.ChannelID = ChannelBox.value;
     if (action == 'Join') {
         event.preventDefault();
         const response = await fetch('/Join', {
@@ -104,8 +115,8 @@ async function SendData(action) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                Username: UsernameBox.value,
-                ChannelID: ChannelBox.value
+                Username: Username,
+                ChannelID: ChannelID
             })
         });
         ResponseHandler(await response.json())
