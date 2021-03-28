@@ -1,64 +1,46 @@
-//Variables
 let ChannelBox = document.getElementById('chanl');
 let UsernameBox = document.getElementById('user');
 let AlertBox = document.getElementById('Alert-box');
 let AlertBoxText = document.getElementById('Alert-box-text');
 let AlertBoxTextDes = document.getElementById('Alert-box-text-des');
-let Main = document.getElementById('main');
-let MainForm = document.getElementById('main-form');
-let ContinueBtn = document.getElementById('continue-btn');
-let SendBtn = document.getElementById("SendButton");
+let ChatScreen = document.getElementById("chat-screen");
+let LoginScreen = document.getElementById("main");
 let LeaveBtn = document.getElementById("leave-btn");
-let IndexLoad = true;
 let Connected = false;
+const IndexLoad = true;
 let InChat = false;
 
+function LeaveRoom() {
+    PageTransform();
+    //Inchat false must be after bcs PageTransform use this variable to idetification
+    InChat = false;
+}
+
 async function PageTransform() {
+    console.log("PageTransform triggered");
     if (InChat == false) {
-        ChannelBox.id = "MsgEdit";
-        ChannelBox = document.getElementById("MsgEdit");
-        ContinueBtn.style.transition = "0.3s";
-        ContinueBtn.style.display = "none";
-        ContinueBtn.style.opacity = "0";
-        ContinueBtn.disabled = 'true';
-    
-        UsernameBox.style.transition = "0.3s";
-        UsernameBox.style.opacity = "0";
-        UsernameBox.style.display = "none";
-        UsernameBox.style.margin = "0px";
-    
-        ChannelBox.style.transition = "0.3s";
-        ChannelBox.placeholder = "";
-        ChannelBox.style.textAlign = "left";
-        ChannelBox.style.border = "none";
-        ChannelBox.style.margin = "0px";
-        ChannelBox.style.height = "40px";
+        console.log("true :",InChat);
+        LoginScreen.style.display = "none";
         setTimeout(() => {
-            Main.style.transition = "0.3s";
-            MainForm.style.margin = "4px 10px 5px 10px";
-            Main.style.height = "60px";
-        }, 400);
+            LoginScreen.style.opacity = "0";
+        }, 250);
+        ChatScreen.style.display = "block";
         setTimeout(() => {
-            MainForm.style.flexDirection = 'row';
-            MainForm.style.maxWidth = "none";
-            Main.style.top = "93%";
-            SendBtn.style.display = "block";
-            SendBtn.style.marginLeft = "-40px";
-            
-        }, 800);
-        setTimeout(() => {
-            Main.style.transition = "0.5s";
-            MainForm.style.transition = "0.4s";
-            Main.style.maxWidth = "99%";
-        }, 1250);
-        setTimeout(() => {
-            LeaveBtn.style.display = 'block';
-            LeaveBtn.disabled = 'false';
-            LeaveBtn.style.opacity = '1';
-        }, 1500);
+            ChatScreen.style.opacity = "1";
+        }, 250);
         InChat = true;
+        LeaveBtn.addEventListener('click',LeaveRoom);
     } else {
+        console.log("false :",InChat);
+        ChatScreen.style.display = "none";
+        setTimeout(() => {
+            ChatScreen.style.opacity = "0";
+        }, 250);
         
+        LoginScreen.style.display = "block";
+        setTimeout(() => {
+            LoginScreen.style.opacity = "1";
+        }, 250);
     }
 }
 
