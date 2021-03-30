@@ -72,10 +72,14 @@ app.post('/Join', (req, res, next) => {
             message: "Request accepted!",
             code: 0,
             ClientAction: {
-                AlertPop: ["Joining!",`Joining ${Channel} as ${Username}`,4000],
-                WSConnect: [`ws://${req.headers.host}`],
-                PageTransform: [],
-                ClearInputs: []
+                JavaScript: `(async ()=>{
+                    if(await WSConnect("ws://${req.headers.host}/${Channel}") == 0){
+                        AlertPop("Joining!","Joining ${Channel} as ${Username}",4000);
+                        PageTransform();
+                        ClearInputs();
+                    }
+                })();
+                `,
             },
             Error: false
         });
