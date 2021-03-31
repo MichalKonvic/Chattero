@@ -104,12 +104,16 @@
         }
         .Alert-box{
             background-color: var(--Dark);
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            height: fit-content;
+            align-items: center;
+            justify-content: center;
             position: fixed;
             top: -10%;
             left: 50%;
             transform: translate(-50%,-50%);
-            width: fit-content;
-            height: fit-content;
             border-radius: 30px;
             opacity: 0;
             transition: 0.5s;
@@ -118,16 +122,12 @@
         .Alert-box-text{
             font-family: Dosis Semi Bold;
             color: var(--Ultra-White);
-            display: flex;
-            justify-content: center;
             font-size: 90%;
-            margin: 15px 30px 20px;
+            margin: 10px 20px 5px 20px;
         }
         .Alert-box-text-des{
             font-family: Dosis Semi Bold;
             color: var(--Ultra-White);
-            display: flex;
-            justify-content: center;
             font-size: 75%;
             margin: 0px 15px 10px 15px;
         }
@@ -234,7 +234,6 @@
     </div>
     <div id="chat-screen" class="chat-screen">
         <ul>
-
         </ul>
         <button id="leave-btn" class="leave-btn">✌️ Leave</button>
         <div class="message-box" id="message-box-main">
