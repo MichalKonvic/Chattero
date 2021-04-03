@@ -4,6 +4,64 @@ const port = 3001;
 app.use(express.static('APP'));
 app.use(express.json({limit: '8mb'}));
 
+//WebSocket
+
+class user{
+    #uIds;
+    constructor(uIdList = []) {
+        this.#uIds = uIdList;
+    }
+    count(){
+        return this.#uIds.length;
+    }
+    join(uId=""){
+        if (this.#uIds.includes(uId) == false) {
+            this.#uIds.push(uId);
+            return true
+        }else{
+            return false;
+        }
+    }
+    leave(uId=""){
+        this.#uIds = this.#uIds.filter((arrayUId) => {return arrayUId !== uId;});
+        return this.#uIds.length;
+    }
+}
+class Room{
+    #name;
+    constructor(name='unnamed', uIdList){
+        this.#name = name;
+        this.user = new user(uIdList);
+    }
+    isEmpty(){
+        if (this.user.count() == 0) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+const WebSocket = require('ws');
+const server = require('http').createServer(app);
+const wss = new WebSocket.Server({server:server,});
+let Rooms = [];
+
+
+function GenUID(preset="") {
+    let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    charset += preset;
+    let UID = '';
+    for (let UsernameChar = 0; UsernameChar < 32; UsernameChar++) {
+        UID += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+    return UID;
+}
+
+
+app.all('/Channel/:ChannelID', (req,res,next) => {
+
+});
+
 app.post('/Leave', (req, res, next) =>{
     const Username = req.body['Username'];
     const Channel = req.body['ChannelID'];
@@ -69,17 +127,11 @@ app.post('/Join', (req, res, next) => {
         res.json({
             Username: Username,
             ChannelID: Channel,
+            UID: 'uid',
             message: "Request accepted!",
             code: 0,
             ClientAction: {
-                JavaScript: `(async ()=>{
-                    if(await WSConnect("ws://${req.headers.host}/${Channel}") == 0){
-                        AlertPop("Joining!","Joining ${Channel} as ${Username}",4000);
-                        PageTransform();
-                        ClearInputs();
-                    }
-                })();
-                `,
+                WSConnect: [`ws://${req.headers.host}/Channel/${Channel}`]
             },
             Error: false
         });

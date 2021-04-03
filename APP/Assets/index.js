@@ -1,6 +1,7 @@
 let ChannelBox = document.getElementById('chanl');
 let UsernameBox = document.getElementById('user');
 let MessageBox = document.getElementById('message-box-input');
+let SendBtn = document.getElementById("SendButton");
 let AlertBox = document.getElementById('Alert-box');
 let AlertBoxText = document.getElementById('Alert-box-text');
 let AlertBoxTextDes = document.getElementById('Alert-box-text-des');
@@ -84,10 +85,18 @@ async function WSConnect(wspath) {
         AlertPop("Error!","Cannot connect to chating server!",4500);
         return 1;
     })
-    socket.addEventListener('open',() =>{
+    socket.onopen = () =>{
         console.log("%c Connection established! %c 🤝","border-radius: 5px; background: #55D9B1; font-weight: bold; color: white; font-size: 30px;","font-size: 30px");
+        PageTransform();
+        ClearInputs();
         return 0;
-    });
+    };
+    SendBtn.onclick = () => {
+        socket.send(MessageBox.value);
+    }
+    socket.onmessage = e => {
+        console.log(e.data);
+    }
 }
 
 function ResponseHandler(ServerResponse) {
