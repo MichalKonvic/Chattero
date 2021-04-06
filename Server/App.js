@@ -1,52 +1,52 @@
 const express = require('express');
 const app = express();
 const port = 3001;
+const host = 'localhost';
 app.use(express.static('APP'));
 app.use(express.json({limit: '8mb'}));
 
 //WebSocket
-
 class user{
-    #uIds;
-    constructor(uIdList = []) {
-        this.#uIds = uIdList;
-    }
-    count(){
-        return this.#uIds.length;
-    }
-    join(uId=""){
-        if (this.#uIds.includes(uId) == false) {
-            this.#uIds.push(uId);
-            return true
-        }else{
-            return false;
-        }
-    }
-    leave(uId=""){
-        this.#uIds = this.#uIds.filter((arrayUId) => {return arrayUId !== uId;});
-        return this.#uIds.length;
+    constructor(ws='',username='',uID='') {
+        this.webSocket = ws;
+        this.Username = username;
+        this.uID = uID;
     }
 }
+class users{
+    #users = [];
+    Join(add_ws,add_username,add_uID){
+        //  user already connected check
+        if(this.#users.some(arrUser => arrUser.uID == add_uID)){
+            return false;
+        }else{
+            this.#users.push(new user(add_ws,add_username,add_uID));
+            return true;
+        }
+    }
+    Left(leave_ws){
+        this.#users.filter(arrUser => {return arrUser.webSocket != leave_ws});
+        return this.#users.length;
+    }
+    count(){
+        return this.#users.length;
+    }
+}
+
 class Room{
     #name;
-    constructor(name='unnamed', uIdList){
+    constructor(name='unnamed'){
         this.#name = name;
-        this.user = new user(uIdList);
+        this.users = new users();
     }
     isEmpty(){
-        if (this.user.count() == 0) {
+        if (this.users.count() == 0) {
             return true;
         }else{
             return false;
         }
     }
 }
-const WebSocket = require('ws');
-const server = require('http').createServer(app);
-const wss = new WebSocket.Server({server:server,});
-let Rooms = [];
-
-
 function GenUID(preset="") {
     let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     charset += preset;
@@ -56,10 +56,20 @@ function GenUID(preset="") {
     }
     return UID;
 }
+const WebSocket = require('ws');
+const server = require('http').createServer(app);
+const wss = new WebSocket.Server({ server:server,port: 8080, path: "/connect"});
+let Rooms = [];
 
-
-app.all('/Channel/:ChannelID', (req,res,next) => {
-
+wss.on('connection', (wsClient) => {
+    wsClient.send(JSON.stringify({
+        message:"Connection established!",
+        code: 0,
+        stage: 0
+    }));
+    wsClient.on('message', (msg) => {
+        //Create room and response with json to open room on client side
+    });
 });
 
 app.post('/Leave', (req, res, next) =>{
@@ -127,11 +137,10 @@ app.post('/Join', (req, res, next) => {
         res.json({
             Username: Username,
             ChannelID: Channel,
-            UID: 'uid',
             message: "Request accepted!",
             code: 0,
             ClientAction: {
-                WSConnect: [`ws://${req.headers.host}/Channel/${Channel}`]
+                WSConnect: [`ws://${host}:8080/connect`]
             },
             Error: false
         });

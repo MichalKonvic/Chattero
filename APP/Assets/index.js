@@ -80,22 +80,37 @@ async function AlertPop(content="",desc="",poptime = 3000) {
 
 async function WSConnect(wspath) {
     const socket = new WebSocket(wspath);
-    socket.addEventListener('error', () => {
+    socket.onerror = () =>{
         console.log("%c Cannot connect to chating server! %c 👷‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
         AlertPop("Error!","Cannot connect to chating server!",4500);
-        return 1;
-    })
+        if (Connected) {
+            Connected = false;
+        }
+    }
     socket.onopen = () =>{
+        Connected = true;
         console.log("%c Connection established! %c 🤝","border-radius: 5px; background: #55D9B1; font-weight: bold; color: white; font-size: 30px;","font-size: 30px");
-        PageTransform();
-        ClearInputs();
-        return 0;
     };
     SendBtn.onclick = () => {
         socket.send(MessageBox.value);
     }
-    socket.onmessage = e => {
-        console.log(e.data);
+    socket.onmessage = msg => {
+        const msgObj = JSON.parse(msg.data); 
+        switch (msgObj.stage) {
+            case 0:
+                socket.send(JSON.stringify({
+                    Username: Username,
+                    ChannelID: ChannelID
+                }));
+                break;
+            case 1:
+                AlertPop("Connecting!",`Connected to ${ChannelID} as ${Username}`,4500);
+                PageTransform();
+                ClearInputs();
+                break;
+            default:
+                break;
+        }
     }
 }
 
