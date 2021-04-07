@@ -71,7 +71,13 @@ class RoomsManager{
         }
     }
     Delete(RoomName){
-
+        ///Returns NEW rooms count
+        this.Rooms = this.Rooms.filter(room => {return room.name != RoomName});
+        return this.Rooms.length;
+    }
+    Count(){
+        ///Returns rooms count
+        return this.Rooms.length;
     }
     RoomIndex(RoomName){
         ///Returns 0-infinity or -1 if does not exist
@@ -82,6 +88,8 @@ class RoomsManager{
 const WebSocket = require('ws');
 const server = require('http').createServer(app);
 const wss = new WebSocket.Server({ server:server,port: 8080, path: "/connect"});
+let Channels = new RoomsManager();
+
 wss.on('connection', (wsClient) => {
     wsClient.send(JSON.stringify({
         message:"Connection established!",
@@ -91,13 +99,41 @@ wss.on('connection', (wsClient) => {
     wsClient.on('message', (msg) => {
         const msgObj = JSON.parse(msg);
         if (msgObj.stage == 0) {
-            const Username = msgObj.Username;
-            const Channel = msgObj.ChannelID;
-            if (condition) {
-                
+            const Username = msgObj.Username.toString();
+            const Channel = msgObj.ChannelID.toString();
+            try {
+                //Room creation
+                if (Channels.Exist(Channel) == false) {
+                    Channels.Create(Channel);
+                }
+                //Room Join
+                Channels.Rooms[Channels.RoomIndex(Channel)].users.Join(wsClient,Username);
+                wsClient.send(JSON.stringify({
+                    message: "Channel accepted!",
+                    stage: 1,
+                    code: 0
+                }))
+            } catch (error) {
+                console.error("Error occured while creating room!\nError: ",error);
+                wsClient.send(JSON.stringify({
+                    message:"Error occured while creating room!",
+                    type: "RoomCreatError",
+                    code: -1,
+                    stage: 3
+                }));
             }
+        }else if(msgObj.stage == 2){
+            ///Normal message send req
+
         }
     });
+    wsClient.onclose = () => {
+        Channels.Rooms.forEach(room => {
+            if(room.users.Exist(wsClient)){
+                room.users.Leave(wsClient);
+            }
+        });
+    }
 });
 
 app.post('/Leave', (req, res, next) =>{

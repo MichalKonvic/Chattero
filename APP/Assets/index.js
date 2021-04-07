@@ -100,7 +100,8 @@ async function WSConnect(wspath) {
             case 0:
                 socket.send(JSON.stringify({
                     Username: Username,
-                    ChannelID: ChannelID
+                    ChannelID: ChannelID,
+                    stage: 0
                 }));
                 break;
             case 1:
@@ -108,7 +109,17 @@ async function WSConnect(wspath) {
                 PageTransform();
                 ClearInputs();
                 break;
+            case 2:
+                //Display message on site
+                break;
+            case 3:
+                console.log("%c Server responded with error! %c 🤦‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
+                console.log("%c Error ➜ ","background:#3689ff; font-weight: bold; color: white; font-size: 15px; border-radius: 2px;",msgObj.message);
+                AlertPop("Cannot connect!","Server responded with error.");
+                socket.close();
+                break;
             default:
+                console.log("%c Invalid server response! %c 🤷‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px")
                 break;
         }
     }
