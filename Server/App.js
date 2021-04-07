@@ -10,25 +10,35 @@ class user{
     constructor(ws='',username='',uID='') {
         this.webSocket = ws;
         this.Username = username;
-        this.uID = uID;
     }
 }
+let count = 0;
+
 class users{
     #users = [];
-    Join(add_ws,add_username,add_uID){
+    Exist(check_ws,check_Username){
+        if(check_ws !== undefined){
+            console.log(1);
+            return this.#users.some(arrUser => arrUser.webSocket == check_ws);
+        }else if(check_Username !== undefined){
+            console.log(1);
+            return this.#users.some(arrUser => arrUser.Username == check_Username);
+        }
+    }
+    Join(add_ws,add_username){
         //  user already connected check
-        if(this.#users.some(arrUser => arrUser.uID == add_uID)){
+        if(this.#users.some(arrUser => arrUser.webSocket == add_ws)){
             return false;
         }else{
-            this.#users.push(new user(add_ws,add_username,add_uID));
+            this.#users.push(new user(add_ws,add_username));
             return true;
         }
     }
-    Left(leave_ws){
-        this.#users.filter(arrUser => {return arrUser.webSocket != leave_ws});
-        return this.#users.length;
+    Leave(leave_ws){
+        this.#users = this.#users.filter(arrUser => {return arrUser.webSocket != leave_ws});
+        return this.Count();
     }
-    count(){
+    Count(){
         return this.#users.length;
     }
 }
@@ -40,22 +50,14 @@ class Room{
         this.users = new users();
     }
     isEmpty(){
-        if (this.users.count() == 0) {
+        if (this.users.Count() == 0) {
             return true;
         }else{
             return false;
         }
     }
 }
-function GenUID(preset="") {
-    let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    charset += preset;
-    let UID = '';
-    for (let UsernameChar = 0; UsernameChar < 32; UsernameChar++) {
-        UID += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-    return UID;
-}
+
 const WebSocket = require('ws');
 const server = require('http').createServer(app);
 const wss = new WebSocket.Server({ server:server,port: 8080, path: "/connect"});
