@@ -12,16 +12,13 @@ class user{
         this.Username = username;
     }
 }
-let count = 0;
 
 class users{
     #users = [];
     Exist(check_ws,check_Username){
         if(check_ws !== undefined){
-            console.log(1);
             return this.#users.some(arrUser => arrUser.webSocket == check_ws);
         }else if(check_Username !== undefined){
-            console.log(1);
             return this.#users.some(arrUser => arrUser.Username == check_Username);
         }
     }
@@ -44,9 +41,9 @@ class users{
 }
 
 class Room{
-    #name;
+    name;
     constructor(name='unnamed'){
-        this.#name = name;
+        this.name = name;
         this.users = new users();
     }
     isEmpty(){
@@ -58,11 +55,33 @@ class Room{
     }
 }
 
+class RoomsManager{
+    Rooms = [];
+    Exist(RoomName){
+        ///Returns if Room exist. true/false
+        return this.Rooms.some(room => room.name == RoomName);
+    }
+    Create(RoomName){
+        ///Returns true for created, false for not created
+        if (this.Exist(RoomName)) {
+            return false;
+        }else{
+            this.Rooms.push(new Room(RoomName));
+            return true;
+        }
+    }
+    Delete(RoomName){
+
+    }
+    RoomIndex(RoomName){
+        ///Returns 0-infinity or -1 if does not exist
+        return this.Rooms.findIndex(room => {return room.name == RoomName});
+    }
+}
+
 const WebSocket = require('ws');
 const server = require('http').createServer(app);
 const wss = new WebSocket.Server({ server:server,port: 8080, path: "/connect"});
-let Rooms = [];
-
 wss.on('connection', (wsClient) => {
     wsClient.send(JSON.stringify({
         message:"Connection established!",
@@ -70,7 +89,14 @@ wss.on('connection', (wsClient) => {
         stage: 0
     }));
     wsClient.on('message', (msg) => {
-        //Create room and response with json to open room on client side
+        const msgObj = JSON.parse(msg);
+        if (msgObj.stage == 0) {
+            const Username = msgObj.Username;
+            const Channel = msgObj.ChannelID;
+            if (condition) {
+                
+            }
+        }
     });
 });
 
