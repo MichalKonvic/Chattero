@@ -14,29 +14,39 @@ class user{
 }
 
 class users{
-    #users = [];
+    users = [];
     Exist(check_ws,check_Username){
         if(check_ws !== undefined){
-            return this.#users.some(arrUser => arrUser.webSocket == check_ws);
+            return this.users.some(arrUser => arrUser.webSocket == check_ws);
         }else if(check_Username !== undefined){
-            return this.#users.some(arrUser => arrUser.Username == check_Username);
+            return this.users.some(arrUser => arrUser.Username == check_Username);
         }
     }
     Join(add_ws,add_username){
         //  user already connected check
-        if(this.#users.some(arrUser => arrUser.webSocket == add_ws)){
+        if(this.users.some(arrUser => arrUser.webSocket == add_ws)){
             return false;
         }else{
-            this.#users.push(new user(add_ws,add_username));
+            this.users.push(new user(add_ws,add_username));
             return true;
         }
     }
     Leave(leave_ws){
-        this.#users = this.#users.filter(arrUser => {return arrUser.webSocket != leave_ws});
+        this.users = this.users.filter(arrUser => {return arrUser.webSocket != leave_ws});
         return this.Count();
     }
     Count(){
-        return this.#users.length;
+        return this.users.length;
+    }
+    findUsername(userWebSocket){
+        if (this.Exist(userWebSocket)) {
+            return this.users.filter(arrUser => {return arrUser.webSocket == userWebSocket })[0].Username;
+        }
+    }
+    findWebSocket(userUsername){
+        if (this.Exist(userUsername)) {
+            return this.users.filter(arrUser => {return arrUser.Username == userUsername })[0].webSocket;
+        }
     }
 }
 
@@ -97,7 +107,17 @@ wss.on('connection', (wsClient) => {
         stage: 0
     }));
     wsClient.on('message', (msg) => {
-        const msgObj = JSON.parse(msg);
+        let msgObj = JSON.parse(msg);
+        try {
+            msgObj = JSON.parse(msg);
+        } catch (error) {
+            wsClient.send(JSON.stringify({
+                message:"Error occured while reading request!",
+                type: "RequestError",
+                code: -1,
+                stage: 3
+            }));
+        }
         if (msgObj.stage == 0) {
             const Username = msgObj.Username.toString();
             const Channel = msgObj.ChannelID.toString();
@@ -117,14 +137,29 @@ wss.on('connection', (wsClient) => {
                 console.error("Error occured while creating room!\nError: ",error);
                 wsClient.send(JSON.stringify({
                     message:"Error occured while creating room!",
-                    type: "RoomCreatError",
+                    type: "RoomCreateError",
                     code: -1,
                     stage: 3
                 }));
             }
         }else if(msgObj.stage == 2){
             ///Normal message send req
-
+            if (Channels.Exist(msgObj.ChannelID)){
+                Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.users.forEach(roomClient => {
+                    roomClient.webSocket.send(JSON.stringify({
+                        message:msgObj.message,
+                        FromUser: Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.findUsername(wsClient),
+                        stage: 2
+                    }));
+                });
+            }else{
+                wsClient.send(JSON.stringify({
+                    message:"Error occured while sending message to room!",
+                    type: "RoomSendError",
+                    code: -1,
+                    stage: 3
+                }));
+            }
         }
     });
     wsClient.onclose = () => {

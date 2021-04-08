@@ -92,7 +92,11 @@ async function WSConnect(wspath) {
         console.log("%c Connection established! %c 🤝","border-radius: 5px; background: #55D9B1; font-weight: bold; color: white; font-size: 30px;","font-size: 30px");
     };
     SendBtn.onclick = () => {
-        socket.send(MessageBox.value);
+        socket.send(JSON.stringify({
+            message:MessageBox.value,
+            ChannelID: ChannelID,
+            stage:2
+        }));
     }
     socket.onmessage = msg => {
         const msgObj = JSON.parse(msg.data); 
@@ -111,6 +115,7 @@ async function WSConnect(wspath) {
                 break;
             case 2:
                 //Display message on site
+                console.log("Message:",msgObj.message);
                 break;
             case 3:
                 console.log("%c Server responded with error! %c 🤦‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
