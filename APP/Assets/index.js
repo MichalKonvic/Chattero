@@ -8,6 +8,7 @@ let AlertBoxTextDes = document.getElementById('Alert-box-text-des');
 let ChatScreen = document.getElementById("chat-screen");
 let LoginScreen = document.getElementById("main");
 let LeaveBtn = document.getElementById("leave-btn");
+let Messages = document.getElementById("Messages");
 let Connected = false;
 const IndexLoad = true;
 let InChat = false;
@@ -30,6 +31,7 @@ function ClearInputs() {
     ChannelBox.value = "";
     UsernameBox.value = "";
     MessageBox.value = "";
+    Messages.innerHTML = "";
 }
 
 async function PageTransform() {
@@ -114,8 +116,9 @@ async function WSConnect(wspath) {
                 ClearInputs();
                 break;
             case 2:
-                //Display message on site
-                console.log("Message:",msgObj.message);
+                const message = msgObj.message;
+                const FromUser = msgObj.FromUser;
+                Messages.innerHTML += `<div class="Msg"><span class="Msg-content"><span class="Msg-user">${FromUser}</span><span class="Msg-dots">:</span><span class="Msg-text">${message}</span></span></div>`;
                 break;
             case 3:
                 console.log("%c Server responded with error! %c 🤦‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");

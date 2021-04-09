@@ -147,7 +147,7 @@ wss.on('connection', (wsClient) => {
             if (Channels.Exist(msgObj.ChannelID)){
                 Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.users.forEach(roomClient => {
                     roomClient.webSocket.send(JSON.stringify({
-                        message:msgObj.message,
+                        message:msgObj.message.toString(),
                         FromUser: Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.findUsername(wsClient),
                         stage: 2
                     }));
