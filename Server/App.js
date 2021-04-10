@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3001;
-const host = 'localhost';
+let host = '192.168.0.103';
 app.use(express.static('APP'));
 app.use(express.json({limit: '8mb'}));
 
@@ -99,6 +99,8 @@ const WebSocket = require('ws');
 const server = require('http').createServer(app);
 const wss = new WebSocket.Server({ server:server,port: 8080, path: "/connect"});
 let Channels = new RoomsManager();
+console.log(`wss at: ${host}:8080`);
+
 
 wss.on('connection', (wsClient) => {
     wsClient.send(JSON.stringify({
@@ -253,5 +255,5 @@ app.post('/Join', (req, res, next) => {
 });
 
 app.listen(port, () =>{
-    console.log(`listening at http://localhost:${port}`)
+    console.log(`listening at http://${host}:${port}`)
 });
