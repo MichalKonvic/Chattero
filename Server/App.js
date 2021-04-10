@@ -111,7 +111,6 @@ console.log(`wss at: ${host}:8080`);
 function RoomCheck() {
     if(Channels.Rooms.findIndex(room => {return room.isEmpty()}) != -1){
         Channels.Delete(Channels.RoomName(Channels.Rooms.findIndex(room => {return room.isEmpty()})));
-        console.log("Deleted");
     }
 }
 
