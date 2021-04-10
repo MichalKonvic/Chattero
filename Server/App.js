@@ -109,7 +109,7 @@ wss.on('connection', (wsClient) => {
         stage: 0
     }));
     wsClient.on('message', (msg) => {
-        let msgObj = JSON.parse(msg);
+        let msgObj;
         try {
             msgObj = JSON.parse(msg);
         } catch (error) {
@@ -145,22 +145,24 @@ wss.on('connection', (wsClient) => {
                 }));
             }
         }else if(msgObj.stage == 2){
-            ///Normal message send req
-            if (Channels.Exist(msgObj.ChannelID)){
-                Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.users.forEach(roomClient => {
-                    roomClient.webSocket.send(JSON.stringify({
-                        message:msgObj.message.toString(),
-                        FromUser: Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.findUsername(wsClient),
-                        stage: 2
+            if(msgObj.message != ""){
+                if (Channels.Exist(msgObj.ChannelID)){
+                    Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.users.forEach(roomClient => {
+                        roomClient.webSocket.send(JSON.stringify({
+                            message:msgObj.message.toString(),
+                            FromUser: Channels.Rooms[Channels.RoomIndex(msgObj.ChannelID)].users.findUsername(wsClient),
+                            stage: 2
+                        }));
+                    });
+                }else{
+                    wsClient.send(JSON.stringify({
+                        message:"Error occured while sending message to room!",
+                        type: "RoomSendError",
+                        code: -1,
+                        stage: 3
                     }));
-                });
-            }else{
-                wsClient.send(JSON.stringify({
-                    message:"Error occured while sending message to room!",
-                    type: "RoomSendError",
-                    code: -1,
-                    stage: 3
-                }));
+                }
+    
             }
         }
     });
