@@ -131,6 +131,9 @@ async function WSConnect(wspath) {
                 break;
         }
     }
+    LeaveBtn.onclick = () => {
+        socket.close();
+    }
 }
 
 function ResponseHandler(ServerResponse) {

@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3001;
-let host = '192.168.0.103';
+let host = 'localhost';
 app.use(express.static('APP'));
 app.use(express.json({limit: '8mb'}));
 
@@ -93,6 +93,13 @@ class RoomsManager{
         ///Returns 0-infinity or -1 if does not exist
         return this.Rooms.findIndex(room => {return room.name == RoomName});
     }
+    RoomName(RoomIndex){
+        try {
+            return this.Rooms[RoomIndex].name;
+        } catch (error) {
+            return -1;
+        }
+    }
 }
 
 const WebSocket = require('ws');
@@ -101,8 +108,16 @@ const wss = new WebSocket.Server({ server:server,port: 8080, path: "/connect"});
 let Channels = new RoomsManager();
 console.log(`wss at: ${host}:8080`);
 
+function RoomCheck() {
+    if(Channels.Rooms.findIndex(room => {return room.isEmpty()}) != -1){
+        Channels.Delete(Channels.RoomName(Channels.Rooms.findIndex(room => {return room.isEmpty()})));
+        console.log("Deleted");
+    }
+}
 
 wss.on('connection', (wsClient) => {
+    wsClient.isAlive = true;
+    wsClient.on('pong',() => wsClient.isAlive = true);
     wsClient.send(JSON.stringify({
         message:"Connection established!",
         code: 0,
@@ -166,7 +181,22 @@ wss.on('connection', (wsClient) => {
             }
         }
     });
+    const interval = setInterval(() => {
+        if (wsClient.isAlive == false) {
+            wsClient.terminate();
+            Channels.Rooms.forEach(room => {
+                if(room.users.Exist(wsClient)){
+                    room.users.Leave(wsClient);
+                }
+            });
+        }
+        RoomCheck();
+        wsClient.ping("Connection test");
+        wsClient.isAlive = false;
+    }, 90000);//90 seconds
     wsClient.onclose = () => {
+        clearInterval(interval);
+        RoomCheck();
         Channels.Rooms.forEach(room => {
             if(room.users.Exist(wsClient)){
                 room.users.Leave(wsClient);
@@ -178,22 +208,18 @@ wss.on('connection', (wsClient) => {
 app.post('/Leave', (req, res, next) =>{
     const Username = req.body['Username'];
     const Channel = req.body['ChannelID'];
-    try {
-        res.json({
-            Username: Username,
-            ChannelID: Channel,
-            message: "Request accepted!",
-            code: 0,
-            ClientAction: {
-                AlertPop: ["Channel left!","",4000],
-                PageTransform: [],
-                ClearInputs: []
-            },
-            Error: false
-        });
-    } catch (errorthrw) {
-        
-    }
+    res.json({
+        Username: Username,
+        ChannelID: Channel,
+        message: "Request accepted!",
+        code: 0,
+        ClientAction: {
+            AlertPop: ["Channel left!","",4000],
+            PageTransform: [],
+            ClearInputs: []
+        },
+        Error: false
+    });
 });
 app.post('/Join', (req, res, next) => {
     const Username = req.body['Username'];
