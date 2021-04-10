@@ -13,20 +13,6 @@ let Connected = false;
 const IndexLoad = true;
 let InChat = false;
 
-function ActionRun(ClientActionObj){
-    //foreach action in ClientAction object
-    Object.keys(ClientActionObj).forEach(action => {
-        //JavaScript action has different execution
-        if (action == 'JavaScript') {
-            eval(ClientActionObj[action]);
-        }
-        else{
-            //Executes function with given params (array)
-            eval(action).apply(this,ClientActionObj[action]);
-        }
-    });
-}
-
 function ClearInputs() {
     ChannelBox.value = "";
     UsernameBox.value = "";
@@ -45,7 +31,6 @@ async function PageTransform() {
             ChatScreen.style.opacity = "1";
         }, 250);
         InChat = true;
-        LeaveBtn.addEventListener('click',() => SendData('Leave'));
     } else {
         ChatScreen.style.display = "none";
         setTimeout(() => {
@@ -81,7 +66,7 @@ async function AlertPop(content="",desc="",poptime = 3000) {
 }
 
 async function WSConnect(wspath) {
-    const socket = new WebSocket(wspath);
+    const socket = new WebSocket(wspath.toString());
     socket.onerror = () =>{
         console.log("%c Cannot connect to chating server! %c 👷‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
         AlertPop("Error!","Cannot connect to chating server!",4500);
@@ -131,6 +116,12 @@ async function WSConnect(wspath) {
                 break;
         }
     }
+    socket.onclose = () => {
+        AlertPop("Channel left!","",2500);
+        PageTransform();
+        ClearInputs();
+        Connected = false
+    }
     LeaveBtn.onclick = () => {
         socket.close();
     }
@@ -138,54 +129,37 @@ async function WSConnect(wspath) {
 
 function ResponseHandler(ServerResponse) {
     if (ServerResponse['Error'] != false) {
-        try {
-            if (ServerResponse.Error.ClientAction != false) {
-                ActionRun(ServerResponse.Error.ClientAction);
-            }
-        } catch (error) {
-            console.log("%c Looks like something bad happend! %c 👷‍♂️","border-radius: 10px; background: #f75e5e; font-weight: bold; color: white; font-size: 50px;","font-size: 50px");
+        switch (ServerResponse.Error.type) {
+            case "RuleBreakError":
+                AlertPop(ServerResponse.Error.message,"",3000);
+                break;
+        
+            default:
+                break;
         }
     }else{
-        if (ServerResponse.code == 0) {
-            const ServerUsername = ServerResponse.Username;
-            globalThis.ServerUsername;
-            const ServerChannelID = ServerResponse.ChannelID;
-            globalThis.ServerChannelID;
-            if(ServerResponse.ClientAction != false){
-                ActionRun(ServerResponse.ClientAction);
-            }
+        if (ServerResponse["wsPath"] != undefined) {
+            WSConnect(ServerResponse["wsPath"]);
+        }
+        else{
+            AlertPop("Cannot connect!","Chatting server not found!",4000);
         }
     }
 }
 
-async function SendData(action) {
+async function ServerCheck() {
     globalThis.Username = UsernameBox.value;
     globalThis.ChannelID = ChannelBox.value;
-    if (action == 'Join') {
-        event.preventDefault();
-        const response = await fetch('/Join', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                Username: Username,
-                ChannelID: ChannelID
-            })
-        });
-        ResponseHandler(await response.json())
-    }else if(action == 'Leave'){
-        event.preventDefault();
-        const response = await fetch('/Leave', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                Username: UsernameBox.value,
-                ChannelID: ChannelBox.value
-            })
-        });
-        ResponseHandler(await response.json())
-    }
+    event.preventDefault();
+    const response = await fetch('/Check', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            Username: Username,
+            ChannelID: ChannelID
+        })
+    });
+    ResponseHandler(await response.json());
 }

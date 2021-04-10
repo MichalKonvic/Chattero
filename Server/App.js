@@ -205,23 +205,7 @@ wss.on('connection', (wsClient) => {
     }
 });
 
-app.post('/Leave', (req, res, next) =>{
-    const Username = req.body['Username'];
-    const Channel = req.body['ChannelID'];
-    res.json({
-        Username: Username,
-        ChannelID: Channel,
-        message: "Request accepted!",
-        code: 0,
-        ClientAction: {
-            AlertPop: ["Channel left!","",4000],
-            PageTransform: [],
-            ClearInputs: []
-        },
-        Error: false
-    });
-});
-app.post('/Join', (req, res, next) => {
+app.post('/Check', (req, res, next) => {
     const Username = req.body['Username'];
     const Channel = req.body['ChannelID'];
     //Data Check
@@ -231,23 +215,17 @@ app.post('/Join', (req, res, next) => {
             //If url pattern match != Channel
             if(Channel.match(/^[a-zA-Z0-9_]*$/) != Channel){
                 throw {
-                    message: "ChannelID does not satisfy ChannelID rules!",
+                    message: "Invalid Channel name!",
                     code: 4,
-                    type: "RuleBreakError",
-                    ClientAction: {
-                        AlertPop: ["Invalid Channel name!","",3000]
-                    }
+                    type: "RuleBreakError"
                 };
             }
         }else{
             //pattern not found
             throw {
-                message: "ChannelID does not satisfy ChannelID rules!",
+                message: "Invalid Channel name!",
                 code: 4,
-                type: "RuleBreakError",
-                ClientAction: {
-                    AlertPop: ["Invalid Channel name!","",3000]
-                }
+                type: "RuleBreakError"
             };
         }
         //if pattern found
@@ -255,12 +233,9 @@ app.post('/Join', (req, res, next) => {
             throw {
                 Username: Username,
                 ChannelID: Channel,
-                message: "Username does not satisfy Username rules!",
+                message: "Invalid Username!",
                 code: 4,
-                type: "RuleBreakError",
-                ClientAction: {
-                    AlertPop: ["Invalid Username!","",3000]
-                }
+                type: "RuleBreakError"
             };
         }
         res.json({
@@ -268,9 +243,7 @@ app.post('/Join', (req, res, next) => {
             ChannelID: Channel,
             message: "Request accepted!",
             code: 0,
-            ClientAction: {
-                WSConnect: [`ws://${host}:8080/connect`]
-            },
+            wsPath: `ws://${host}:8080/connect`,
             Error: false
         });
     } catch (errorthrw) {
