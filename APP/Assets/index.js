@@ -128,10 +128,10 @@ async function WSConnect(wspath) {
 }
 
 function ResponseHandler(ServerResponse) {
-    if (ServerResponse['Error'] != false) {
-        switch (ServerResponse.Error.type) {
+    if (ServerResponse['Error'] !== false) {
+        switch (ServerResponse['Error'].type) {
             case "RuleBreakError":
-                AlertPop(ServerResponse.Error.message,"",3000);
+                AlertPop(ServerResponse['Error'].message,"",3000);
                 break;
         
             default:
@@ -160,6 +160,11 @@ async function ServerCheck() {
             Username: Username,
             ChannelID: ChannelID
         })
+    }).then(serverResponse => serverResponse.json()).then(rawJson => {
+        ResponseHandler(rawJson);
+    })
+    .catch(error => {
+        AlertPop("Cannot connect!","No server response!",5000);
+        console.log("%c No server response! %c 👷‍♂️","border-radius: 5px; background: #f75e5e; font-weight: bold; color: white; font-size: 30px;","font-size: 35px");
     });
-    ResponseHandler(await response.json());
 }
